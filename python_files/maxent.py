@@ -285,7 +285,8 @@ class MaxEnt:
 
     def _visualize_solution(self, xlim=None, 
                             title="Maximum entropy density", 
-                            actual_density=None, actual_param=None,
+                            actual_density=None, 
+                            actual_param=None,
                             actual_lambda=None):
         if(xlim is None):
             xlim = (self._l, self._u)
