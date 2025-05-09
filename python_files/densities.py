@@ -95,7 +95,7 @@ def b_constraint_skewkurt(skew, kurt):
 
 ### Skewness-kurtosis + 6th ###
 def f_constraint_skewkurt_6(x):
-    return np.array([x,x**2,x**3,x**4,x**6])
+    return np.array([x,x**2,x**3,x**4,x**8])
 
-def b_constraint_skewkurt_6(skew, kurt, moment_6):
-    return np.array([0, 1, skew, kurt, moment_6])
+def b_constraint_skewkurt_6(skew, kurt,  m10):
+    return np.array([0, 1, skew, kurt, m10])
