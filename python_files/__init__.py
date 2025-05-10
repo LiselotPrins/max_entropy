@@ -1,3 +1,1 @@
-###Note
-# from .maxent import MaxEnt
-# from . import densities as d
+###Empty __init__.py to make folder into package
