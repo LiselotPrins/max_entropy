@@ -1,4 +1,3 @@
-###TODO Documentation
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,7 +8,6 @@ from autograd import jacobian, hessian
 from scipy.integrate import quad 
 
 class MaxEnt:
-    ###TODO: make docstring better
     """ A class used to solve a maximum entropy problem and visualize 
     the results.
     
@@ -74,7 +72,7 @@ class MaxEnt:
         Sets normalization constant and, if message is True, prints error 
         of integration.
     
-    _get_la(), _get_convergence()
+    get_la(), get_convergence()
         Getters
     """
 
@@ -83,11 +81,29 @@ class MaxEnt:
                 warning_convergence=True, message_norm=False):
         """Initializes MaxEnt object
 
-        support:                The support [l,u] for the distribution
+        Parameters
+        ----------
+        support:                The support [l,u] for the distribution. 
+                                Array of two numbers.
         n_quadrature:           The number of points in Gaussian quadrature
         b_constraints:          The vector of numbers
         f_vector:               Vector/array of functions,
                                 (same shape as b_constraints)
+        f_param:                Array of parameters for functions in f_vector
+                                (Default: empty)
+        k_max:                  Max amount of iterations of the algorithm.
+                                If is has not converged by then, it will stop
+                                and send warning if warning_convergence is true.
+                                (Default: 100)
+        start:                  Start vector for algorithm. 
+                                (Default: np.zeros([self._m]), which will
+                                be set in _algorithm)
+        warning_convergence:    If true, and the algorithm doesn't stop 
+                                before k_max iterations, a warning is made.
+                                (Default: True)
+        message_norm:           If true, a message stating the error on 
+                                the normalisation constant will be shown.
+                                (Default: False)
         """
 
         # The constraint functions, in an array
@@ -113,7 +129,6 @@ class MaxEnt:
 
         if len(b_constraints) != self._m:
             raise Exception("The dimension of constraints should match the dimension of the function vector.")
-        
 
 
         # Here follows the modified optimization algorithm from Rockinger 
@@ -151,7 +166,7 @@ class MaxEnt:
         ----------
         x: number or np.array
             values in which to calculate pdf
-            
+
         Output
         ----------
         x evaluated in the pdf, in the same shape as the input"""
@@ -257,7 +272,8 @@ class MaxEnt:
             print(f"{self.calc_error(actual_lambda):.3e}")
 
     def calc_error(self, actual_lambda):
-        return np.linalg.norm(self._la-actual_lambda)
+        """Calculates distance between resulting parameters and real values"""
+        return np.linalg.norm(self._la - actual_lambda)
     
     def _algorithm(self, k_max=100, start=None, 
                    warning_convergence=True, message_norm=False):
@@ -341,7 +357,7 @@ class MaxEnt:
         
         self._norm_const = c
 
-        # error is usually low; at most e-7
+        # error is usually low; below e-7
         if(message):
             print(
                 f"Estimate of absolute integration error of norm. const.: {s:.3e}"
