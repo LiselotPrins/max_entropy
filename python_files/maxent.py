@@ -151,7 +151,6 @@ class MaxEnt:
         self._A = np.asarray(
             [ self._f_vector(xj,*f_param)-self._b_vector for xj in x])
 
-        ###TODO Or should this be a method of class?
         self._jacobian = jacobian(self._Q) 
         self._hessian = hessian(self._Q)
 
@@ -209,9 +208,10 @@ class MaxEnt:
         raise TypeError("The argument of 'cdf' should be a scalar or np.array of scalars")
 
 
-    def visualize_algorithm(self, title="Evolution of parameters"):
+    def visualize_algorithm(self, title="Evolution of parameters",
+                            title_save=None):
         """
-        Show a figure which visualizes lambda_k as function of k.
+        Show a figure which visualizes lambda_i as function of i.
         """
 
         print("The resulting parameters:")
@@ -220,18 +220,21 @@ class MaxEnt:
 
         with plt.style.context("ggplot"):
             fig, ax1 = plt.subplots(dpi=100)
-            ax1.set_xlabel('Iteration $k$')
-            ax1.set_ylabel('$\\lambda_k^i$')
+            ax1.set_xlabel('Iteration $i$')
+            ax1.set_ylabel('$\\lambda_i^j$')
             ax1.tick_params(axis='y')
 
             for i in range(self._m):
                 ax1.plot(self._la_all[:,i], label = f'{i+1}')
 
-            ax1.legend(loc='upper left', title="$i$")
+            ax1.legend(loc='upper left', title="$j$")
             ax1.set_title(title)
             ax1.grid(color='w')
 
             fig.tight_layout()
+
+            if(title_save is not None):
+                plt.savefig(title_save)
             plt.show()
 
 
@@ -239,7 +242,8 @@ class MaxEnt:
                             title="Maximum entropy density", 
                             actual_density=None, 
                             actual_param=None,
-                            actual_lambda=None):
+                            actual_lambda=None,
+                            title_save=None):
         if(xlim is None):
             xlim = (self._l, self._u)
         
@@ -254,7 +258,7 @@ class MaxEnt:
             ax1.set_ylabel('pdf')
             ax1.tick_params(axis='y')
 
-            ax1.plot(xx,yy,label="ME density")
+            ax1.plot(xx,yy,label="Result algorithm")
 
             if(actual_density is not None):
                 ax1.plot(xx, actual_density(xx, *actual_param), 
@@ -266,6 +270,9 @@ class MaxEnt:
             ax1.set_xlim(*xlim)
             
             fig.tight_layout()
+
+            if(title_save is not None):
+                plt.savefig(title_save)
             plt.show()
         if(actual_lambda is not None):
             print(f"The (Euclidian) distance between result and actual parameter:")
