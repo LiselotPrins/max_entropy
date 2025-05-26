@@ -174,7 +174,7 @@ class MaxEnt:
         if isinstance(x, (int, float, np.floating)):
             return np.exp(
                         np.inner(self._la, 
-                                self._f_vector(x,*self._f_param))
+                                self._f_vector(x,*self._f_param)-self._b_vector)
                          )/self._norm_const
         
         # If x is array-like, recursively call pdf on the elements of x.
@@ -359,7 +359,7 @@ class MaxEnt:
     def _set_norm_const(self, message=False):
         """Set normalization constant and print error of integration"""
         c, s = quad(lambda x: np.exp(np.inner(self._la, 
-                                              self._f_vector(x,*self._f_param))), 
+                                    self._f_vector(x,*self._f_param)-self._b_vector)), 
                     self._l, self._u)
         
         self._norm_const = c
