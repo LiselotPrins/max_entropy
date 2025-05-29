@@ -1,6 +1,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+plt.style.use("ggplot")
 # Autodiff package
 from autograd import numpy as anp
 from autograd import jacobian, hessian
@@ -218,24 +219,24 @@ class MaxEnt:
         for i in range(self._m):
             print(f"  Lambda_{i+1} = {self._la[i]:.3f}")
 
-        with plt.style.context("ggplot"):
-            fig, ax1 = plt.subplots(dpi=100)
-            ax1.set_xlabel('Iteration $i$')
-            ax1.set_ylabel('$\\lambda_i^j$')
-            ax1.tick_params(axis='y')
+        
+        fig, ax1 = plt.subplots(dpi=100)
+        ax1.set_xlabel('Iteration $i$')
+        ax1.set_ylabel('$\\lambda_i^j$')
+        ax1.tick_params(axis='y')
 
-            for i in range(self._m):
-                ax1.plot(self._la_all[:,i], label = f'{i+1}')
+        for i in range(self._m):
+            ax1.plot(self._la_all[:,i], label = f'{i+1}')
 
-            ax1.legend(loc='upper left', title="$j$")
-            ax1.set_title(title)
-            ax1.grid(color='w')
+        ax1.legend(loc='upper left', title="$j$")
+        ax1.set_title(title)
+        ax1.grid(color='w')
 
-            fig.tight_layout()
+        fig.tight_layout()
 
-            if(title_save is not None):
-                plt.savefig(title_save)
-            plt.show()
+        if(title_save is not None):
+            plt.savefig(title_save)
+        plt.show()
 
 
     def visualize_solution(self, xlim=None, 
@@ -252,28 +253,29 @@ class MaxEnt:
 
         yy = self.pdf(xx)
 
-        with plt.style.context("ggplot"):
-            fig, ax1 = plt.subplots(dpi=100)
-            ax1.set_xlabel('$x$')
-            ax1.set_ylabel('pdf')
-            ax1.tick_params(axis='y')
+        
+        fig, ax1 = plt.subplots(dpi=100)
+        ax1.set_xlabel('$x$')
+        ax1.set_ylabel('pdf')
+        ax1.tick_params(axis='y')
 
-            ax1.plot(xx,yy,label="Result algorithm")
+        ax1.plot(xx,yy,label="Result algorithm")
 
-            if(actual_density is not None):
-                ax1.plot(xx, actual_density(xx, *actual_param), 
-                         label="actual density",linestyle=":")
+        if(actual_density is not None):
+            ax1.plot(xx, actual_density(xx, *actual_param), 
+                        label="actual density",linestyle=":")
 
-            ax1.legend(loc='best')
-            ax1.set_title(title)
-            ax1.grid(color='w')
-            ax1.set_xlim(*xlim)
-            
-            fig.tight_layout()
+        ax1.legend(loc='best')
+        ax1.set_title(title)
+        ax1.grid(color='w')
+        ax1.set_xlim(*xlim)
+        
+        fig.tight_layout()
 
-            if(title_save is not None):
-                plt.savefig(title_save)
-            plt.show()
+        if(title_save is not None):
+            plt.savefig(title_save)
+        plt.show()
+        
         if(actual_lambda is not None):
             print(f"The (Euclidian) distance between result and actual parameter:")
             print(f"{self.calc_error(actual_lambda):.3e}")

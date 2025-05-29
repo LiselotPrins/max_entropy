@@ -1,51 +1,54 @@
 import numpy as np
 from autograd import numpy as anp
-from scipy.stats import norm, laplace, expon, pareto, vonmises, rayleigh
+from scipy.stats import norm, laplace, expon, pareto, vonmises, rayleigh, cauchy
 from scipy.special import iv #modified bessel function of first kind
 
-def norm_pdf(x,m,s):
-    return norm.pdf(x, loc=m, scale=s)
-def laplace_pdf(x,mu,c):
+def pdf_norm(x,m,s2):
+    return norm.pdf(x, loc=m, scale=np.sqrt(s2))
+def pdf_expon(x,a):
+    return expon.pdf(x,scale=1/a)
+def pdf_laplace(x,mu,c):
     return laplace.pdf(x, loc=mu, scale=c)
-def expon_pdf(x,loc,a):
-    return expon.pdf(x,loc=loc,scale=1/a)
-def rayleigh_pdf(x,loc,a):
+def pdf_pareto(x,a,xm):
+    return pareto.pdf(x,a,loc=0,scale=xm)
+def pdf_cauchy(x):
+    return cauchy.pdf(x)
+
+def pdf_rayleigh(x,loc,a):
     return rayleigh.pdf(x,loc=loc,scale=a)
-def vonmises_pdf(x,loc,k):
+def pdf_vonmises(x,loc,k):
     return vonmises.pdf(x,loc=loc,kappa=k)
 
+
+
+def cdf_norm(x,m,s2):
+    return norm.cdf(x, loc=m, scale=np.sqrt(s2))
+def cdf_expon(x,a):
+    return expon.cdf(x,scale=1/a)
+def cdf_laplace(x,mu,c):
+    return laplace.cdf(x, loc=mu, scale=c)
+def cdf_pareto(x,a,xm):
+    return pareto.cdf(x,a,loc=0,scale=xm)
+def cdf_cauchy(x):
+    return cauchy.cdf(x)
+
+def cdf_rayleigh(x,loc,a):
+    return rayleigh.cdf(x,loc=loc,scale=a)
+def cdf_vonmises(x,loc,k):
+    return vonmises.cdf(x,loc=loc,kappa=k)
+
 ### Normal distribution: 1 constraint ###
-def f_constraint_normal1(x,mu):
+def f_constraint_normal1(x, mu, s2):
     return np.array([(x-mu)**2])
 
-def b_constraint_normal1(mu,s2):
+def b_constraint_normal1(mu, s2):
     return np.array([s2])
 
 def lambda_actual_normal1(mu, s2):
     return np.array([(-0.5/s2)])
 
-### Normal distribution: 2 constraints ###
-def f_constraint_normal2(x):
-    return np.array([x, x**2])
-
-def b_constraint_normal2(mu,s2):
-    return np.array([mu, s2 + mu**2])
-
-def lambda_actual_normal2(mu, s2):
-    return np.array([mu/s2, -0.5/s2])
-
-### Laplace ###
-def f_constraint_laplace(x,mu):
-    return np.array([anp.abs(x-mu)])
-
-def b_constraint_laplace(mu,c):
-    return np.array([c])
-
-def lambda_actual_laplace(mu,c):
-    return np.array([-1/c])
-
 ### Exponential ###
-def f_constraint_expon(x):
+def f_constraint_expon(x, a):
     return np.array([x])
 
 def b_constraint_expon(a):
@@ -54,16 +57,45 @@ def b_constraint_expon(a):
 def lambda_actual_expon(a):
     return np.array([-a])
 
+### Laplace ###
+def f_constraint_laplace(x,mu,c):
+    return np.array([anp.abs(x-mu)])
+
+def b_constraint_laplace(mu,c):
+    return np.array([c])
+
+def lambda_actual_laplace(mu,c):
+    return np.array([-1/c])
 
 ### Pareto ###
-def f_constraint_pareto(x):
+def f_constraint_pareto(x,a,xm):
     return np.array([anp.log(x)])
 
-def b_constraint_pareto(xm,a):
+def b_constraint_pareto(a,xm):
     return np.array([1/a + anp.log(xm)])
 
-def lambda_actual_pareto(xm,a):
+def lambda_actual_pareto(a,xm):
     return np.array([-a-1])
+
+### Cauchy ###
+def f_constraint_cauchy(x):
+    return np.array([anp.log(1+x**2)])
+
+def b_constraint_cauchy():
+    return np.array([2*np.log(2)])
+
+def lambda_actual_cauchy():
+    return np.array([-1])
+
+### Normal distribution: 2 constraints ###
+def f_constraint_normal2(x, mu, s2):
+    return np.array([x, x**2])
+
+def b_constraint_normal2(mu, s2):
+    return np.array([mu, s2 + mu**2])
+
+def lambda_actual_normal2(mu, s2):
+    return np.array([mu/s2, -0.5/s2])
 
 ### Rayleigh ###
 def f_constraint_rayleigh(x):
