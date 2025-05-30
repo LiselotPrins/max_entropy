@@ -1,6 +1,6 @@
 import numpy as np
 from autograd import numpy as anp
-from scipy.stats import norm, laplace, expon, pareto, vonmises, rayleigh, cauchy
+from scipy.stats import norm, laplace, expon, pareto, vonmises, rayleigh, cauchy, lognorm
 from scipy.special import iv #modified bessel function of first kind
 
 def pdf_norm(x,m,s2):
@@ -14,10 +14,13 @@ def pdf_pareto(x,a,xm):
 def pdf_cauchy(x):
     return cauchy.pdf(x)
 
-def pdf_rayleigh(x,loc,a):
-    return rayleigh.pdf(x,loc=loc,scale=a)
+def pdf_lognorm(x,mu,s2):
+    return lognorm.pdf(x,s=np.sqrt(s2),scale=np.exp(mu))
 def pdf_vonmises(x,loc,k):
     return vonmises.pdf(x,loc=loc,kappa=k)
+def pdf_rayleigh(x,s2):
+    return rayleigh.pdf(x,scale=s2)
+
 
 
 
@@ -32,10 +35,13 @@ def cdf_pareto(x,a,xm):
 def cdf_cauchy(x):
     return cauchy.cdf(x)
 
-def cdf_rayleigh(x,loc,a):
-    return rayleigh.cdf(x,loc=loc,scale=a)
+def cdf_lognorm(x,mu,s2):
+    return lognorm.cdf(x,s=np.sqrt(s2),scale=np.exp(mu))
 def cdf_vonmises(x,loc,k):
     return vonmises.cdf(x,loc=loc,kappa=k)
+def cdf_rayleigh(x,s2):
+    return rayleigh.cdf(x,scale=s2)
+
 
 ### Normal distribution: 1 constraint ###
 def f_constraint_normal1(x, mu, s2):
@@ -97,18 +103,18 @@ def b_constraint_normal2(mu, s2):
 def lambda_actual_normal2(mu, s2):
     return np.array([mu/s2, -0.5/s2])
 
-### Rayleigh ###
-def f_constraint_rayleigh(x):
-    return np.array([x**2, anp.log(x)])
+### Lognormal distribution ###
+def f_constraint_lognormal(x, mu, s2):
+    return np.array([anp.log(x), anp.log(x)**2])
 
-def b_constraint_rayleigh(s2):
-    return np.array([2*s2, (np.log(2*s2)- np.euler_gamma)/2])
+def b_constraint_lognormal(mu, s2):
+    return np.array([mu, s2 + mu**2])
 
-def lambda_actual_rayleigh(s2):
-    return np.array([-0.5/s2,1])
+def lambda_actual_lognormal(mu, s2):
+    return np.array([mu/s2-1, -0.5/s2])
 
 ### Von Mises ###
-def f_constraint_vonmises(x):
+def f_constraint_vonmises(x, mu, k):
     return np.array([anp.cos(x), anp.sin(x)])
 
 def b_constraint_vonmises(mu, k):
@@ -117,6 +123,28 @@ def b_constraint_vonmises(mu, k):
 
 def lambda_actual_vonmises(mu, k):
     return np.array([k*anp.cos(mu), k*anp.sin(mu)])
+
+### Rayleigh ###
+def f_constraint_rayleigh(x, s2):
+    return np.array([x**2, anp.log(x)])
+
+def b_constraint_rayleigh(s2):
+    return np.array([2*s2, (np.log(2*s2)- np.euler_gamma)/2])
+
+def lambda_actual_rayleigh(s2):
+    return np.array([-0.5/s2,1])
+
+### Gamma ###
+def f_constraint_famma(x, k, theta):
+    return np.array([x, anp.log(x)])
+
+def b_constraint_gamma(k, theta):
+    return np.array([k*theta, psi(k)+np.log(theta)])
+
+def lambda_actual_rayleigh(s2):
+    return np.array([-0.5/s2,1])
+
+
 
 ### Skewness-kurtosis ###
 def f_constraint_skewkurt(x):
