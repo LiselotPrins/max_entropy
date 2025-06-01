@@ -1,7 +1,8 @@
 import numpy as np
 from autograd import numpy as anp
-from scipy.stats import norm, laplace, expon, pareto, vonmises, rayleigh, cauchy, lognorm
+from scipy.stats import norm, laplace, expon, pareto, vonmises, rayleigh, cauchy, lognorm, gamma
 from scipy.special import iv #modified bessel function of first kind
+from scipy.special import digamma
 
 def pdf_norm(x,m,s2):
     return norm.pdf(x, loc=m, scale=np.sqrt(s2))
@@ -20,7 +21,8 @@ def pdf_vonmises(x,loc,k):
     return vonmises.pdf(x,loc=loc,kappa=k)
 def pdf_rayleigh(x,s2):
     return rayleigh.pdf(x,scale=s2)
-
+def pdf_gamma(x, k, theta):
+    return gamma.pdf(x, a=k, scale=theta)
 
 
 
@@ -41,6 +43,8 @@ def cdf_vonmises(x,loc,k):
     return vonmises.cdf(x,loc=loc,kappa=k)
 def cdf_rayleigh(x,s2):
     return rayleigh.cdf(x,scale=s2)
+def cdf_gamma(x, k, theta):
+    return gamma.cdf(x, a=k, scale=theta)
 
 
 ### Normal distribution: 1 constraint ###
@@ -135,14 +139,14 @@ def lambda_actual_rayleigh(s2):
     return np.array([-0.5/s2,1])
 
 ### Gamma ###
-def f_constraint_famma(x, k, theta):
+def f_constraint_gamma(x, k, theta):
     return np.array([x, anp.log(x)])
 
 def b_constraint_gamma(k, theta):
-    return np.array([k*theta, psi(k)+np.log(theta)])
+    return np.array([k*theta, digamma(k)+np.log(theta)])
 
-def lambda_actual_rayleigh(s2):
-    return np.array([-0.5/s2,1])
+def lambda_actual_gamma(k, theta):
+    return np.array([-1/theta, k-1])
 
 
 
