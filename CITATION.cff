@@ -1,0 +1,7 @@
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Prins
+    given-names: Liselot
+title: "MaxEnt project"
+date-released: 01-06-2025
+url: "https://github.com/LiselotPrins/max_entropy"
