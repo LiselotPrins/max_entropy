@@ -210,7 +210,7 @@ class MaxEnt:
 
 
     def visualize_algorithm(self, title="Evolution of parameters",
-                            title_save=None):
+                            title_save=None, figsize=(4,3)):
         """
         Show a figure which visualizes lambda_i as function of i.
         """
@@ -220,7 +220,7 @@ class MaxEnt:
             print(f"  Lambda_{i+1} = {self._la[i]:.3f}")
 
         
-        fig, ax1 = plt.subplots(dpi=100)
+        fig, ax1 = plt.subplots(dpi=100, figsize=figsize)
         ax1.set_xlabel('Iteration $i$')
         ax1.set_ylabel('$\\lambda_i^j$')
         ax1.tick_params(axis='y')
@@ -244,7 +244,8 @@ class MaxEnt:
                             actual_density=None, 
                             actual_param=None,
                             actual_lambda=None,
-                            title_save=None):
+                            title_save=None,
+                            figsize=(4,3)):
         if(xlim is None):
             xlim = (self._l, self._u)
         
@@ -254,7 +255,7 @@ class MaxEnt:
         yy = self.pdf(xx)
 
         
-        fig, ax1 = plt.subplots(dpi=100)
+        fig, ax1 = plt.subplots(dpi=100, figsize=figsize)
         ax1.set_xlabel('$x$')
         ax1.set_ylabel('pdf')
         ax1.tick_params(axis='y')
@@ -340,7 +341,7 @@ class MaxEnt:
             k = k+1
 
             # Stop iterating if steps are too small -> convergence reached
-            # At least 20 steps, to ensure it doesn't stop too early
+            # At least 10 steps, to ensure it doesn't stop too early
             if(k > 10 and np.linalg.norm(d) < 10**(-9)):
                 self._k_end = k
                 self._converges = True
