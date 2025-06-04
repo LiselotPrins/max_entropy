@@ -170,3 +170,10 @@ def f_constraint_skewkurt_8(x):
 
 def b_constraint_skewkurt_8(skew, kurt,  m8):
     return np.array([0, 1, skew, kurt, m8])
+
+    ### First three moments ###
+def f_constraint_three_moments(x):
+    return np.array([x,x**2,x**3])
+
+def b_constraint_three_moments(m1, m2, m3):
+    return np.array([m1, m2, m3])
