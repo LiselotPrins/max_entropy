@@ -132,8 +132,8 @@ class MaxEnt:
             raise Exception("The dimension of constraints should match the dimension of the function vector.")
 
 
-        # Here follows the modified optimization algorithm from Rockinger 
-        # & Jondeau (2002). The 'Steps' concide with the steps from 
+        # Here follows the modified optimization algorithm from Rockinger
+        # & Jondeau (2002). The 'Steps' concide with the steps from
         # Algorithm 1 of the paper (p. 126)
 
         # Step 1:
@@ -264,7 +264,7 @@ class MaxEnt:
 
         if(actual_density is not None):
             ax1.plot(xx, actual_density(xx, *actual_param), 
-                        label="actual density",linestyle=":")
+                        label="Actual density",linestyle=":")
 
         ax1.legend(loc='best')
         ax1.set_title(title)
@@ -289,12 +289,12 @@ class MaxEnt:
                    warning_convergence=True, message_norm=False):
         """Executes modified Algo 1 from Rockinger & Jondeau
 
-        If the Algorithm doesn't converge in k_max steps, a message is 
+        If the Algorithm doesn't converge in k_max steps, a message is
         printed. _k_end is then equal to k_max.
 
         If the Algorithm does converge, _k_end is set to the first k s.t.
         the k-th iteration doesn't change more than 10^-9 w.r.t. k-1-th 
-        iteration. 
+        iteration.
 
         Sets normalization constant
 
