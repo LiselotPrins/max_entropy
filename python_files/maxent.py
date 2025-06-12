@@ -210,7 +210,7 @@ class MaxEnt:
 
 
     def visualize_algorithm(self, title="Evolution of parameters",
-                            title_save=None, figsize=(4,3)):
+                            title_save=None, figsize=(5,4)):
         """
         Show a figure which visualizes lambda_i as function of i.
         """
@@ -222,7 +222,7 @@ class MaxEnt:
         
         fig, ax1 = plt.subplots(dpi=100, figsize=figsize)
         ax1.set_xlabel('Iteration $i$')
-        ax1.set_ylabel('$\\lambda_i^j$')
+        ax1.set_ylabel('$\\lambda_j^i$')
         ax1.tick_params(axis='y')
 
         for i in range(self._m):
@@ -245,7 +245,7 @@ class MaxEnt:
                             actual_param=None,
                             actual_lambda=None,
                             title_save=None,
-                            figsize=(4,3)):
+                            figsize=(5,4)):
         if(xlim is None):
             xlim = (self._l, self._u)
         
