@@ -21,7 +21,7 @@ class MaxEnt:
     _l, _u : floats
         the lower resp. upper limit of support [l,u]
     _m : int
-        the amount of constraints
+        the amount of constraints (k in thesis)
     _b_vector : array of floats
         expectations of constraint functions
     _converges : Boolean
@@ -77,9 +77,15 @@ class MaxEnt:
         Getters
     """
 
-    def __init__(self, support, n_quadrature, b_constraints, f_vector, 
-                f_param=[], k_max=100, start=None, 
-                warning_convergence=True, message_norm=False):
+    def __init__(self, support, 
+                 n_quadrature, 
+                 b_constraints, 
+                 f_vector, 
+                 f_param=[], 
+                 k_max=100, 
+                 start=None, 
+                 warning_convergence=True, 
+                 message_norm=False):
         """Initializes MaxEnt object
 
         Parameters
@@ -167,9 +173,10 @@ class MaxEnt:
         x: number or np.array
             values in which to calculate pdf
 
-        Output
+        Returns
         ----------
-        x evaluated in the pdf, in the same shape as the input"""
+        pdf evaluated in x, in the same shape as the input x
+        """
         
         # If x is a scalar, calculate pdf in x.
         if isinstance(x, (int, float, np.floating)):
@@ -191,9 +198,16 @@ class MaxEnt:
     
     def cdf(self, x):
         """Returns cdf of ME in value x
-        x: np.array filled with scalars, or scalar
-        Output is same shape as input
-        Assumptions: all scalars are between _l and _u"""
+
+        Parameters
+        ----------
+        x: number or np.array
+            values in which to calculate cdf
+
+        Returns
+        ----------
+        cdf evaluated in x, in the same shape as the input
+        """
 
         # If x is scalar, calculate cdf in x.
         if isinstance(x, (int, float, np.floating)):
@@ -210,9 +224,27 @@ class MaxEnt:
 
 
     def visualize_algorithm(self, title="Evolution of parameters",
-                            title_save=None, figsize=(5,4)):
-        """
-        Show a figure which visualizes lambda_i as function of i.
+                            title_save=None, 
+                            figsize=(5,4)):
+        """Show a figure which visualizes lambda^i as function of i.
+
+        Parameters
+        ----------
+        title: str (optional)
+            Title for figure
+        title_save: str (optional)
+            Title for saving figure. By default, the figure is not saved
+        figsize : 2d tuple (optional)
+            Figure size
+
+        Actions
+        ----------
+        Make figure showing evolution of Lagrange parameters throughout the 
+        algorithm. If title_save is set, this figure is saved.
+
+        Returns
+        ----------
+        None
         """
 
         print("The resulting parameters:")
@@ -241,11 +273,43 @@ class MaxEnt:
 
     def visualize_solution(self, xlim=None, 
                             title="Maximum entropy density", 
+                            title_save=None,
+                            figsize=(5,4),
                             actual_density=None, 
                             actual_param=None,
-                            actual_lambda=None,
-                            title_save=None,
-                            figsize=(5,4)):
+                            actual_lambda=None):
+        """Show a figure which visualizes MaxEnt distribution.
+
+        Parameters
+        ----------
+        xlim : 2d tuple (optional)
+            limits for plotting MaxEnt distribution. Default: [l,u]
+        title : str (optional)
+            Title for figure
+        title_save : str (optional)
+            Title for saving figure. By default, the figure is not saved
+        figsize : 2d tuple (optional)
+            Figure size
+        actual_density: function (optional)
+            Function with arguments x, and parameters actual_param. If specified,
+            it is plotted in the figure
+        actual_param : tuple or array (optional)
+            tuple with parameters of actual_density
+        actual_lambda : array with m dimensions (optional)
+            if specified, the error is calculated using the euclidian distance
+        
+
+        Actions
+        ----------
+        Make figure showing evolution of Lagrange parameters throughout the 
+        algorithm. If title_save is set, this figure is saved. 
+        If actual_density is specified, this is also plotted.
+        If actual_lambda is specified, the error is printed.
+
+        Returns
+        ----------
+        None
+        """
         if(xlim is None):
             xlim = (self._l, self._u)
         
@@ -282,7 +346,7 @@ class MaxEnt:
             print(f"{self.calc_error(actual_lambda):.3e}")
 
     def calc_error(self, actual_lambda):
-        """Calculates distance between resulting parameters and real values"""
+        """Calculates Euclidian distance between resulting parameters and real values"""
         return np.linalg.norm(self._la - actual_lambda)
     
     def _algorithm(self, k_max=100, start=None, 
@@ -296,7 +360,7 @@ class MaxEnt:
         the k-th iteration doesn't change more than 10^-9 w.r.t. k-1-th 
         iteration.
 
-        Sets normalization constant
+        Sets normalization constant.
 
         Parameters
         ----------
